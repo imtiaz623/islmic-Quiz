@@ -18,12 +18,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Zip kholo (agar zip upload hai)
+        run: |
+          if [ ! -f package.json ] && [ -f IslamicQuiz_Project.zip ]; then
+            unzip -q -o IslamicQuiz_Project.zip
+            echo "Zip khul gayi"
+          fi
+          ls -la
+
       - name: Files check
         run: |
-          ls -la
           for f in package.json capacitor.config.json www/index.html scripts/patch-android.mjs; do
             if [ ! -f "$f" ]; then
-              echo "::error::'$f' repo ke root mein nahi mili. Files ko repo ke root mein upload karein (kisi folder ke andar nahi)."
+              echo "::error::'$f' nahi mili. Zip ya files sahi se upload karein."
               exit 1
             fi
           done
