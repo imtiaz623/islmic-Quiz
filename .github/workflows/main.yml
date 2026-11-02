@@ -18,10 +18,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Files check
+        run: |
+          ls -la
+          for f in package.json capacitor.config.json www/index.html scripts/patch-android.mjs; do
+            if [ ! -f "$f" ]; then
+              echo "::error::'$f' repo ke root mein nahi mili. Files ko repo ke root mein upload karein (kisi folder ke andar nahi)."
+              exit 1
+            fi
+          done
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
       - uses: actions/setup-java@v4
         with:
@@ -31,7 +40,7 @@ jobs:
       - uses: android-actions/setup-android@v3
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Sheet URL lagao (agar variable set hai)
         if: env.SHEET_API_URL != ''
